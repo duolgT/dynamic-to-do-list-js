@@ -1,46 +1,46 @@
-// Wait for the HTML document to fully load
 document.addEventListener('DOMContentLoaded', function () {
-    // Select DOM elements
     const addButton = document.getElementById('add-task-btn');
     const taskInput = document.getElementById('task-input');
     const taskList = document.getElementById('task-list');
 
-    // Load tasks from localStorage when the page loads
-    loadTasks();
+    loadTasks(); // Load tasks from localStorage
 
-    // Function to add a new task
+    // Add a new task to the list
     function addTask() {
         const taskText = taskInput.value.trim();
 
-        // Validate user input
         if (taskText === '') {
             alert('Please enter a task.');
             return;
         }
 
-        // Create <li> element
+        // Create list item
         const li = document.createElement('li');
-        li.textContent = taskText;
+
+        // Create span for task text (so the button doesn’t get overwritten)
+        const taskSpan = document.createElement('span');
+        taskSpan.textContent = taskText;
 
         // Create remove button
         const removeBtn = document.createElement('button');
         removeBtn.textContent = 'Remove';
         removeBtn.className = 'remove-btn';
 
-        // Attach click event to remove button
+        // Remove task on click
         removeBtn.onclick = function () {
             taskList.removeChild(li);
             removeTaskFromStorage(taskText);
         };
 
-        // Append remove button to <li> and <li> to the list
+        // Append elements
+        li.appendChild(taskSpan);
         li.appendChild(removeBtn);
         taskList.appendChild(li);
 
-        // Save task to localStorage
+        // Save to storage
         saveTaskToStorage(taskText);
 
-        // Clear the input field
+        // Clear input
         taskInput.value = '';
     }
 
@@ -68,13 +68,15 @@ document.addEventListener('DOMContentLoaded', function () {
         localStorage.setItem('tasks', JSON.stringify(tasks));
     }
 
-    // Load tasks from localStorage
+    // Load saved tasks from localStorage
     function loadTasks() {
         const tasks = JSON.parse(localStorage.getItem('tasks')) || [];
 
         tasks.forEach(taskText => {
             const li = document.createElement('li');
-            li.textContent = taskText;
+
+            const taskSpan = document.createElement('span');
+            taskSpan.textContent = taskText;
 
             const removeBtn = document.createElement('button');
             removeBtn.textContent = 'Remove';
@@ -85,6 +87,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 removeTaskFromStorage(taskText);
             };
 
+            li.appendChild(taskSpan);
             li.appendChild(removeBtn);
             taskList.appendChild(li);
         });
